@@ -1,0 +1,7 @@
+.contributor_box {
+    float: left;
+    padding: 2px;
+}
+.contributor_box span{
+	padding: 10px;
+}
