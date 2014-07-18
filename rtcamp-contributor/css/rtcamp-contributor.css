@@ -1,5 +1,5 @@
 .contributor_box {
-    float: left;
+ 	 clear:both;
     padding: 2px;
 }
 .contributor_box span{

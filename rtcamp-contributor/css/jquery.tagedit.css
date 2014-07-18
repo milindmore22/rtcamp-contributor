@@ -1,0 +1,17 @@
+.removebox:before{
+content: 'x'; 
+color: red;
+font-weight: 800;
+font-family: Arial, sans-serif;
+padding: 5px;
+font-size: 20px;
+cursor: pointer;
+}
+
+.tagval {
+    background: none repeat scroll 0 0 #ccc;
+    border-radius: 2px;
+    float: left;
+    margin: 2px;
+    padding: 5px;
+}
