@@ -9,7 +9,7 @@ rtcamp-contributor is a wordpress plugin which allows user (administrator) assig
 
 Demo
 ----
-[demolink]
+[demo link]
 
 Version
 ----
@@ -47,4 +47,4 @@ GPLV2
 
 **Free Software, Hell Yeah!**
 
-[demolink]:http://rtcampassignment.webege.com/rtcamp-contributor-demo/
+[demo link]:http://rtcampassignment.webege.com/rtcamp-contributor-demo/
