@@ -26,8 +26,6 @@ function add_contributors($content){
 	$rtcamp_contributor_count=get_post_meta(get_the_ID(),"rtcamp_contributor_count",true);
 	$rtcamp_contributor_total=get_post_meta(get_the_ID(),"total_count",true);
 	
-	//var_dump($rtcamp_contributors);
-	//var_dump($rtcamp_contributor_count);
 	if($rtcamp_contributors){
 	$contributor_box="
 	<div class='clear'>
@@ -38,13 +36,12 @@ function add_contributors($content){
 					$user=get_user_by("id", $user_id);
 					$contributor_box.="<div class='contributor_box'>";
 					$contributor_box.= "<a href='".get_author_link(false, $user_id)."'>".get_avatar( $user_id, $size = '44')."<span>".$user->user_nicename."</span></a>";
-					$usercount=$rtcamp_contributor_count[$user_id];
+					$usercount=$rtcamp_contributor_count[$user_id]; // gets users word count
 					
-					//echo $rtcamp_contributor_total;
 					if($rtcamp_contributor_total!=0){
-						$percentage_contribution= $usercount / $rtcamp_contributor_total * 100;
+						$percentage_contribution= $usercount / $rtcamp_contributor_total * 100; // calculate percentage
 					}
-					$contributor_box.="Contributed : ".round($percentage_contribution,2) ." %";
+					$contributor_box.="Contributed : ".round($percentage_contribution,2) ." %"; // append percentage
 					$contributor_box.="</div>";
 				}
 					

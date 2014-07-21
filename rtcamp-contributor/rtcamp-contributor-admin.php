@@ -11,7 +11,7 @@ function post_contribuitor_metabox(){
 }
 
 /**
- *  Call back for metabox
+ *  Callback for metabox
  */
 function display_contributors_box($post){
 	//retrive presaved contributors
@@ -31,18 +31,18 @@ function display_contributors_box($post){
 				}
 				?>
 			</div>
-			<input type="hidden" name="post_count_pre" value="<?php echo $post_count_pre;?>" />
+			<input type="hidden" name="post_count_pre" value="<?php echo $post_count_pre;?>" /> <!-- Previous post count as hidden value -->
 	</div>
 	<?php 
 }
 
 /**
- * Content Edit pre action hook to get previous world count
+ * Content edit pre action hook to get previous world count
  */
 add_action("content_edit_pre", "edit_pre_hook",10,1);
 function edit_pre_hook($post_content_pre){
 	$precount=str_word_count($post_content_pre);
-	update_post_meta(get_the_ID(),"post_count_pre", $precount);
+	update_post_meta(get_the_ID(),"post_count_pre", $precount); // storing word count before edit
 	return $post_content_pre;
 }
 
@@ -56,11 +56,20 @@ function save_post_contributors($post_id,$post){
 	
 	if($post->post_type=="post"){ // you can add diffrent post type in case you registered post type here
 		
-		$post_count_pre=get_post_meta($post->ID,"post_count_pre",true); // previous word count
-		$rtcamp_contributor_count=get_post_meta($post->ID,"rtcamp_contributor_count",true); // authorwise word count in array
-		$user_id=get_current_user_id(); // current author id
-		$post_count_new=str_word_count($post->post_content); // new word count
-		$authorCount=$post_count_new - $post_count_pre; // author word count
+		// previous word count
+		$post_count_pre=get_post_meta($post->ID,"post_count_pre",true);
+		
+		// authors word count in array
+		$rtcamp_contributor_count=get_post_meta($post->ID,"rtcamp_contributor_count",true);
+		
+		// current author id
+		$user_id=get_current_user_id();
+		 
+		// new word count
+		$post_count_new=str_word_count($post->post_content);
+		
+		// author word count = new word count - previous word count
+		$authorCount=$post_count_new - $post_count_pre; 
 		
 		/**
 		 * check if user is present in list
@@ -74,13 +83,14 @@ function save_post_contributors($post_id,$post){
 				$rtcamp_contributor_count[$user_id]=$authorCount;
 			}
 		
+		// stored array of authors count in post meta
 		if(isset($rtcamp_contributor_count) && $rtcamp_contributor_count!=''){
 			update_post_meta($post->ID, "rtcamp_contributor_count", $rtcamp_contributor_count);
 		}else{
 			delete_post_meta($post->ID, "rtcamp_contributor_count");
 		}
 	
-		
+		// Stored total word count
 		if(isset($post_count_new) && $post_count_new!=''){
 			update_post_meta($post->ID, "total_count", $post_count_new);
 		}else{
@@ -98,6 +108,7 @@ function save_post_contributors($post_id,$post){
 			
 		}
 		
+		//Stroing assigned contributors from autocomplete
 		if(isset($_POST['rtcamp_contributor']) && $_POST['rtcamp_contributor']!=''){
 			
 			update_post_meta($post_id, "rtcamp_contributor", $_POST['rtcamp_contributor']);
@@ -109,15 +120,12 @@ function save_post_contributors($post_id,$post){
 }
 
 /**
- * Add other capability to edit other users post
+ * Add capability to author for editing other users post
  */
 add_action( 'admin_init', 'add_author_edit_post_caps');
 function add_author_edit_post_caps() {
 	// gets the author role
 	$role = get_role( 'author' );
-
-	// This only works, because it accesses the class instance.
-	// would allow the author to edit others' posts
 	$role->add_cap( 'edit_others_posts' );
 }
 
@@ -138,16 +146,16 @@ function rtcamp_contributor_load_header(){
 	
 	wp_enqueue_style("jquery-tagedit-css");
 	
-	// Wordpress Admin Ajax
+	// Wordpress Admin Ajax for autocomplete box calls action wp_ajax_rtcamp_contributor_submit
 	wp_enqueue_script( 'rtcamp_contributor_autocomplete', plugin_dir_url(__FILE__)."js/rtcamp-contributor-admin.js", array( 'jquery', 'jquery-form', 'json2' ), false, true );
 	wp_localize_script(
 	'rtcamp_contributor_autocomplete',
 	'rtcamp_contributor_object',
 	array(
-	'ajaxurl' => admin_url( 'admin-ajax.php' ),
-	'myajax_nonce' => wp_create_nonce( 'rtcamp_contributor_nonce' ),
-	'action' => 'rtcamp_contributor_submit'
-	)
+			'ajaxurl' => admin_url( 'admin-ajax.php' ),
+			'myajax_nonce' => wp_create_nonce( 'rtcamp_contributor_nonce' ),
+			'action' => 'rtcamp_contributor_submit'
+		)
 	);
 }
 /**
